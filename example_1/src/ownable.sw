@@ -20,24 +20,24 @@ abi Ownable {
     // Associated methods. These are default-implemented
     #[storage(read)]
     fn owner() -> b256 {
-        owner.read()
+        Self::owner.read()
     }
 
     #[storage(read)]
     fn only_owner() {
-        assert(std::chain::auth::msg_sender().unwrap() == Identity::Address(~Address::from(owner.read())));
+        assert(std::chain::auth::msg_sender().unwrap() == Identity::Address(~Address::from(Self::owner.read())));
     }
 
     #[storage(write)]
     fn renounce_ownership() {
-        owner.write(std::constants::ZERO_B256);
+        Self::owner.write(std::constants::ZERO_B256);
     }
 
     #[storage(read, write)]
     fn transfer_ownership(new_owner: b256) {
         assert(new_owner != std::constants::ZERO_B256);
-        let old_owner = owner.read();
-        owner.write(new_owner);
+        let old_owner = Self::owner.read();
+        Self::owner.write(new_owner);
         std::logging::log(OwnershipTransferred {
             previous_owner: old_owner,
             new_owner: new_owner,
